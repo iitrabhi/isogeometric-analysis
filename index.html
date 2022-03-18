@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="index.js"></script>
+    <script src="https://code.createjs.com/createjs-2013.12.12.min.js"></script>
+    <style>
+      canvas {
+        background-color: rgba(245, 245, 245, 1);
+        float: right;
+      }
+    </style>
+  </head>
+
+  <body onload="init();">
+    <div id="controls">
+      __X______________________Y____________________Weights
+      <div id="controlPoints"></div>
+      <button id="addPoint" onClick="addControlPoint()">Add Point</button>
+    </div>
+    <br />
+    Knots
+    <br />
+    Clamped at start
+    <input
+      type="checkbox"
+      name="Clamp at start"
+      onchange="updateClamp(this.value)"
+      value="start"
+    />
+    Clamped at end
+    <input
+      type="checkbox"
+      name="Clamp at start"
+      onchange="updateClamp(this.value)"
+      value="end"
+    />
+
+    <div id="knots"></div>
+    <p></p>
+    Parameter
+    <div id="sliderOutput"></div>
+    <div class="slidecontainer">
+      <input
+        type="range"
+        min="1"
+        max="100"
+        value="50"
+        class="slider"
+        id="parameterSlider"
+      />
+    </div>
+    <div id="sliderValues"></div>
+    <canvas id="basis" width="800" height="800"></canvas>
+    <canvas id="canvas" width="800" height="800"></canvas>
+  </body>
+</html>
