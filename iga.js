@@ -24,18 +24,6 @@ rect._renderer.elem.addEventListener('mouseout', function() {
     changeColor('rgb(255, 255, 255)');
 }, false);
 
-// two.bind('update', function(frameCount) {
-//     center.translation.set(two.width / 2, two.height / 2);
-//     center.scale = 0.5 * (Math.sin(frameCount / 30) + 1) / 2 + 0.5;
-//     for (var i = 0; i < circles.length; i++) {
-//         var circle = circles[i];
-//         var mag = circle.radius * Math.sin(circle.offset + frameCount / 15);
-//         var x = mag * Math.cos(circle.theta) + center.translation.x;
-//         var y = mag * Math.sin(circle.theta) + center.translation.y;
-//         circle.translation.set(x, y);
-//     }
-// });
-
 function changeColor(color) {
     rect.fill = color;
 }
