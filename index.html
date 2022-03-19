@@ -1,20 +1,15 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="main.css">
     <script src="js/two.min.js"></script>
-  </head>
-  <body>
-    <script>
-      var two = new Two({
-        fullscreen: true,
-        autostart: true
-      }).appendTo(document.body);
-      var rect = two.makeRectangle(two.width / 2, two.height / 2, 150 ,150);
-      two.bind('update', function() {
-        rect.rotation += 0.01;
-      });
+</head>
+
+<body>
+    <script src="iga.js">
     </script>
-  </body>
+</body>
+
 </html>
