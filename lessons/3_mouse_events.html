@@ -29,8 +29,8 @@
         
         .card {
             margin: 30px auto;
-            width: 300px;
-            height: 300px;
+            width: 640px;
+            height: 480px;
             border-radius: 8px;
             border: 5px solid;
             border-width: 2px;
@@ -49,16 +49,13 @@
 <body>
     <div id="canvas_1" class="card"></div>
     <script type="text/javascript">
-        // addBackdrop(25);
-
-        const radius = 40,
+        const radius = 30,
             editColor = '#ffffff',
             mouse = new Two.Vector(),
             temp = new Two.Vector();
 
         const two = new Two({
             type: Two.Types.canvas,
-            fullscreen: true,
             autostart: true
         });
 
@@ -95,35 +92,29 @@
                 v.controls.right.add(v);
 
                 if (j === 0 || j === vertices.length - 1) {
-
                     points.vertices.push(v);
-
                 } else {
-
                     points.vertices.push(v, v.controls.left, v.controls.right);
                     const vertices = [v.controls.left, v.clone(), v.controls.right];
                     const line = new Two.Path(vertices);
                     line.noFill().stroke = editColor;
                     line.linewidth = 2;
-
                     attach(v, vertices[1]);
-
                     two.add(line);
 
                 }
-
             }
-
         }
 
         two.add(points);
 
         two.bind('resize', resize);
         resize();
+        // two.update();
 
-        window.addEventListener('pointerdown', pointerdown, false);
-        window.addEventListener('pointermove', pointermove, false);
-        window.addEventListener('pointerup', pointerup, false);
+        ob1.addEventListener('pointerdown', pointerdown, false);
+        ob1.addEventListener('pointermove', pointermove, false);
+        ob1.addEventListener('pointerup', pointerup, false);
 
         function resize() {
             cx = two.width * 0.5;
@@ -141,6 +132,8 @@
             if (current) {
                 isDragging = true;
             }
+            console.log(e.clientX)
+
         }
 
         function pointermove(e) {
@@ -161,7 +154,7 @@
 
                     const v = points.vertices[i];
                     const dist = temp.copy(v).add(two.scene.position).distanceToSquared(mouse);
-
+                    console.log(dist)
                     if (dist < 64) {
                         two.renderer.domElement.style.cursor = 'pointer';
                         matched = true;
@@ -181,33 +174,6 @@
 
         function pointerup(e) {
             isDragging = false;
-        }
-
-        function addBackdrop(d) {
-
-            const dimensions = d || 50;
-            const two = new Two({
-                type: Two.Types.canvas,
-                width: dimensions,
-                height: dimensions
-            });
-
-            const r = dimensions / 5;
-            const center = dimensions / 2;
-
-            const a = two.makeLine(center - r, center, center + r, center);
-            const b = two.makeLine(center, center - r, center, center + r);
-
-            a.stroke = b.stroke = '#aaa';
-            a.linewidth = b.linewidth = 0.25;
-
-            two.update();
-
-            const style = document.body.style;
-            style.backgroundImage = `url(${two.renderer.domElement.toDataURL()})`;
-            style.backgroundRepeat = 'repeat';
-            style.backgroundSize = `${dimensions}px`;
-
         }
     </script>
 </body>
