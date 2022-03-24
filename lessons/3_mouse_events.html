@@ -10,6 +10,14 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="../main.css">
     <script src="../js/two.min.js"></script>
+    <!-- letter "C" made in Adobe Illustrator CS5 -->
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" x="0px" y="0px" width="202px" height="264px" overflow="visible" enable-background="new -0.469 -0.136 202 264"
+        xml:space="preserve">
+    <path fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M200.5,204.792
+  c0,0-35.703,58.341-99.988,58.341C36.223,263.132,0.5,210.862,0.5,131.531C0.5,52.204,38.584,0.5,100.5,0.5
+  c61.924,0,85.354,51.704,85.354,51.704"/>
+    </svg>
+
     <style>
         .cards-list {
             z-index: 0;
@@ -28,7 +36,7 @@
             border-width: 2px;
             border-color: #505b61;
             /* box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25), -5px -5px 30px 7px rgba(0, 0, 0, 0.22); */
-            cursor: pointer;
+            /* cursor: pointer; */
             transition: 0.4s;
             background-color: #06090c;
             overflow: hidden;
@@ -39,163 +47,166 @@
 </head>
 
 <body>
-    <div class="cards-list">
-        <div id="canvas_1" class="card"></div>
-        <div id="canvas_2" class="card"></div>
-    </div>
+    <div id="canvas_1" class="card"></div>
     <script type="text/javascript">
+        // addBackdrop(25);
+
+        const radius = 40,
+            editColor = '#ffffff',
+            mouse = new Two.Vector(),
+            temp = new Two.Vector();
+
+        const two = new Two({
+            type: Two.Types.canvas,
+            fullscreen: true,
+            autostart: true
+        });
+
         var ob1 = document.getElementById('canvas_1');
-        var two1 = new Two();
-        two1.appendTo(ob1);
-        var circle = two1.makeCircle(150, 150, 80);
-        circle.fill = '#06090c';
-        circle.stroke = '#42c1f9';
-        circle.linewidth = 6;
-        two1.update();
+        two.appendTo(ob1);
 
-        var ob2 = document.getElementById('canvas_2');
-        var two2 = new Two();
-        two2.appendTo(ob2);
-        var circle = two2.makeCircle(0, 80, 80);
-        circle.fill = '#06090c';
-        circle.stroke = '#42c1f9';
-        circle.linewidth = 6;
-        two2.update();
+        let cx, cy, current = null,
+            isDragging = false;
 
+        let svg = document.querySelector('svg');
+        svg.style.display = 'none';
 
+        svg = two.interpret(svg);
+        svg.center();
+        svg.linewidth = radius;
+        svg.cap = svg.join = 'round';
+        svg.noFill().stroke = '#FEE06760';
 
+        const points = new Two.Points();
+        points.size = radius / 4;
+        points.noStroke().fill = editColor;
 
-        var stage = new Two.Group();
-        var shape = circle;
-        stage.add(shape);
-        two2.add(stage);
-        addZUI();
+        for (let i = 0; i < svg.children.length; i++) {
 
-        function addZUI() {
+            const child = svg.children[i];
+            const vertices = child.vertices;
 
-            var domElement = two.renderer.domElement;
-            var zui = new Two.ZUI(stage);
-            var mouse = new Two.Vector();
-            var touches = {};
-            var distance = 0;
-            var dragging = false;
+            for (let j = 0; j < vertices.length; j++) {
 
-            // zui.addLimits(0.06, 8);
+                const v = child.vertices[j];
 
-            domElement.addEventListener('mousedown', mousedown, false);
-            domElement.addEventListener('mousewheel', mousewheel, false);
-            domElement.addEventListener('wheel', mousewheel, false);
+                v.relative = false;
+                v.controls.left.add(v);
+                v.controls.right.add(v);
 
-            domElement.addEventListener('touchstart', touchstart, false);
-            domElement.addEventListener('touchmove', touchmove, false);
-            domElement.addEventListener('touchend', touchend, false);
-            domElement.addEventListener('touchcancel', touchend, false);
+                if (j === 0 || j === vertices.length - 1) {
 
-            function mousedown(e) {
-                mouse.x = e.clientX;
-                mouse.y = e.clientY;
-                var rect = shape.getBoundingClientRect();
-                dragging = mouse.x > rect.left && mouse.x < rect.right &&
-                    mouse.y > rect.top && mouse.y < rect.bottom;
-                window.addEventListener('mousemove', mousemove, false);
-                window.addEventListener('mouseup', mouseup, false);
-            }
+                    points.vertices.push(v);
 
-            function mousemove(e) {
-                var dx = e.clientX - mouse.x;
-                var dy = e.clientY - mouse.y;
-                if (dragging) {
-                    shape.position.x += dx / zui.scale;
-                    shape.position.y += dy / zui.scale;
                 } else {
-                    zui.translateSurface(dx, dy);
+
+                    points.vertices.push(v, v.controls.left, v.controls.right);
+                    const vertices = [v.controls.left, v.clone(), v.controls.right];
+                    const line = new Two.Path(vertices);
+                    line.noFill().stroke = editColor;
+                    line.linewidth = 2;
+
+                    attach(v, vertices[1]);
+
+                    two.add(line);
+
                 }
-                mouse.set(e.clientX, e.clientY);
+
             }
 
-            function mouseup(e) {
-                window.removeEventListener('mousemove', mousemove, false);
-                window.removeEventListener('mouseup', mouseup, false);
-            }
+        }
 
-            function mousewheel(e) {
-                var dy = (e.wheelDeltaY || -e.deltaY) / 1000;
-                zui.zoomBy(dy, e.clientX, e.clientY);
-            }
+        two.add(points);
 
-            function touchstart(e) {
-                switch (e.touches.length) {
-                    case 2:
-                        pinchstart(e);
-                        break;
-                    case 1:
-                        panstart(e)
-                        break;
+        two.bind('resize', resize);
+        resize();
+
+        window.addEventListener('pointerdown', pointerdown, false);
+        window.addEventListener('pointermove', pointermove, false);
+        window.addEventListener('pointerup', pointerup, false);
+
+        function resize() {
+            cx = two.width * 0.5;
+            cy = two.height * 0.5;
+            two.scene.position.set(cx, cy);
+        }
+
+        function attach(a, b) {
+            a.bind(Two.Events.Types.change, function() {
+                b.copy(a);
+            });
+        }
+
+        function pointerdown(e) {
+            if (current) {
+                isDragging = true;
+            }
+        }
+
+        function pointermove(e) {
+
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+
+            if (isDragging) {
+
+                current.x = mouse.x - two.scene.position.x;
+                current.y = mouse.y - two.scene.position.y;
+
+            } else {
+
+                let matched = false;
+
+                for (let i = 0; i < points.vertices.length; i++) {
+
+                    const v = points.vertices[i];
+                    const dist = temp.copy(v).add(two.scene.position).distanceToSquared(mouse);
+
+                    if (dist < 64) {
+                        two.renderer.domElement.style.cursor = 'pointer';
+                        matched = true;
+                        current = v;
+                    }
+
                 }
-            }
 
-            function touchmove(e) {
-                switch (e.touches.length) {
-                    case 2:
-                        pinchmove(e);
-                        break;
-                    case 1:
-                        panmove(e)
-                        break;
+                if (!matched) {
+                    two.renderer.domElement.style.cursor = 'default';
+                    current = null;
                 }
+
             }
 
-            function touchend(e) {
-                touches = {};
-                var touch = e.touches[0];
-                if (touch) { // Pass through for panning after pinching
-                    mouse.x = touch.clientX;
-                    mouse.y = touch.clientY;
-                }
-            }
+        }
 
-            function panstart(e) {
-                var touch = e.touches[0];
-                mouse.x = touch.clientX;
-                mouse.y = touch.clientY;
-            }
+        function pointerup(e) {
+            isDragging = false;
+        }
 
-            function panmove(e) {
-                var touch = e.touches[0];
-                var dx = touch.clientX - mouse.x;
-                var dy = touch.clientY - mouse.y;
-                zui.translateSurface(dx, dy);
-                mouse.set(touch.clientX, touch.clientY);
-            }
+        function addBackdrop(d) {
 
-            function pinchstart(e) {
-                for (var i = 0; i < e.touches.length; i++) {
-                    var touch = e.touches[i];
-                    touches[touch.identifier] = touch;
-                }
-                var a = touches[0];
-                var b = touches[1];
-                var dx = b.clientX - a.clientX;
-                var dy = b.clientY - a.clientY;
-                distance = Math.sqrt(dx * dx + dy * dy);
-                mouse.x = dx / 2 + a.clientX;
-                mouse.y = dy / 2 + a.clientY;
-            }
+            const dimensions = d || 50;
+            const two = new Two({
+                type: Two.Types.canvas,
+                width: dimensions,
+                height: dimensions
+            });
 
-            function pinchmove(e) {
-                for (var i = 0; i < e.touches.length; i++) {
-                    var touch = e.touches[i];
-                    touches[touch.identifier] = touch;
-                }
-                var a = touches[0];
-                var b = touches[1];
-                var dx = b.clientX - a.clientX;
-                var dy = b.clientY - a.clientY;
-                var d = Math.sqrt(dx * dx + dy * dy);
-                var delta = d - distance;
-                zui.zoomBy(delta / 250, mouse.x, mouse.y);
-                distance = d;
-            }
+            const r = dimensions / 5;
+            const center = dimensions / 2;
+
+            const a = two.makeLine(center - r, center, center + r, center);
+            const b = two.makeLine(center, center - r, center, center + r);
+
+            a.stroke = b.stroke = '#aaa';
+            a.linewidth = b.linewidth = 0.25;
+
+            two.update();
+
+            const style = document.body.style;
+            style.backgroundImage = `url(${two.renderer.domElement.toDataURL()})`;
+            style.backgroundRepeat = 'repeat';
+            style.backgroundSize = `${dimensions}px`;
 
         }
     </script>
