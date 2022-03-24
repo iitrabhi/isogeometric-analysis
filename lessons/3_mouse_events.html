@@ -62,6 +62,18 @@
         var ob1 = document.getElementById('canvas_1');
         two.appendTo(ob1);
 
+        function getOffset(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY
+            };
+        }
+
+        // console.log(getOffset(ob1).left);
+        // console.log(getOffset(ob1).top)
+
+
         let cx, cy, current = null,
             isDragging = false;
 
@@ -105,7 +117,7 @@
                 }
             }
         }
-
+        // v.size = radius;
         two.add(points);
 
         two.bind('resize', resize);
@@ -132,14 +144,17 @@
             if (current) {
                 isDragging = true;
             }
-            console.log(e.clientX)
+            // console.log(e.clientX)
 
         }
 
         function pointermove(e) {
 
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
+            mouse.x = e.clientX - getOffset(ob1).left;
+            mouse.y = e.clientY - getOffset(ob1).top;
+
+            // console.log(mouse.x);
+            // console.log(two.scene.position.y)
 
             if (isDragging) {
 
@@ -153,8 +168,9 @@
                 for (let i = 0; i < points.vertices.length; i++) {
 
                     const v = points.vertices[i];
+                    // console.log(v.x);
                     const dist = temp.copy(v).add(two.scene.position).distanceToSquared(mouse);
-                    console.log(dist)
+                    // console.log(dist)
                     if (dist < 64) {
                         two.renderer.domElement.style.cursor = 'pointer';
                         matched = true;
