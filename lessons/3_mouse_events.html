@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<!-- #f8135d
+#42c1f9
+#13ffb9
+#fee067 
+#06090c -->
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../main.css">
+    <script src="../js/two.min.js"></script>
+    <style>
+        .cards-list {
+            z-index: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            margin: 30px auto;
+            width: 300px;
+            height: 300px;
+            border-radius: 8px;
+            border: 5px solid;
+            border-width: 2px;
+            border-color: #505b61;
+            /* box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25), -5px -5px 30px 7px rgba(0, 0, 0, 0.22); */
+            cursor: pointer;
+            transition: 0.4s;
+            background-color: #06090c;
+            overflow: hidden;
+            /* this fixes the overflow:hidden in Chrome/Opera */
+            /* -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cards-list">
+        <div id="canvas_1" class="card"></div>
+        <div id="canvas_2" class="card"></div>
+    </div>
+    <script type="text/javascript">
+        var ob1 = document.getElementById('canvas_1');
+        var two1 = new Two();
+        two1.appendTo(ob1);
+        var circle = two1.makeCircle(150, 150, 80);
+        circle.fill = '#06090c';
+        circle.stroke = '#42c1f9';
+        circle.linewidth = 6;
+        two1.update();
+
+        var ob2 = document.getElementById('canvas_2');
+        var two2 = new Two();
+        two2.appendTo(ob2);
+        var circle = two2.makeCircle(0, 80, 80);
+        circle.fill = '#06090c';
+        circle.stroke = '#42c1f9';
+        circle.linewidth = 6;
+        two2.update();
+
+
+
+
+        var stage = new Two.Group();
+        var shape = circle;
+        stage.add(shape);
+        two2.add(stage);
+        addZUI();
+
+        function addZUI() {
+
+            var domElement = two.renderer.domElement;
+            var zui = new Two.ZUI(stage);
+            var mouse = new Two.Vector();
+            var touches = {};
+            var distance = 0;
+            var dragging = false;
+
+            // zui.addLimits(0.06, 8);
+
+            domElement.addEventListener('mousedown', mousedown, false);
+            domElement.addEventListener('mousewheel', mousewheel, false);
+            domElement.addEventListener('wheel', mousewheel, false);
+
+            domElement.addEventListener('touchstart', touchstart, false);
+            domElement.addEventListener('touchmove', touchmove, false);
+            domElement.addEventListener('touchend', touchend, false);
+            domElement.addEventListener('touchcancel', touchend, false);
+
+            function mousedown(e) {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+                var rect = shape.getBoundingClientRect();
+                dragging = mouse.x > rect.left && mouse.x < rect.right &&
+                    mouse.y > rect.top && mouse.y < rect.bottom;
+                window.addEventListener('mousemove', mousemove, false);
+                window.addEventListener('mouseup', mouseup, false);
+            }
+
+            function mousemove(e) {
+                var dx = e.clientX - mouse.x;
+                var dy = e.clientY - mouse.y;
+                if (dragging) {
+                    shape.position.x += dx / zui.scale;
+                    shape.position.y += dy / zui.scale;
+                } else {
+                    zui.translateSurface(dx, dy);
+                }
+                mouse.set(e.clientX, e.clientY);
+            }
+
+            function mouseup(e) {
+                window.removeEventListener('mousemove', mousemove, false);
+                window.removeEventListener('mouseup', mouseup, false);
+            }
+
+            function mousewheel(e) {
+                var dy = (e.wheelDeltaY || -e.deltaY) / 1000;
+                zui.zoomBy(dy, e.clientX, e.clientY);
+            }
+
+            function touchstart(e) {
+                switch (e.touches.length) {
+                    case 2:
+                        pinchstart(e);
+                        break;
+                    case 1:
+                        panstart(e)
+                        break;
+                }
+            }
+
+            function touchmove(e) {
+                switch (e.touches.length) {
+                    case 2:
+                        pinchmove(e);
+                        break;
+                    case 1:
+                        panmove(e)
+                        break;
+                }
+            }
+
+            function touchend(e) {
+                touches = {};
+                var touch = e.touches[0];
+                if (touch) { // Pass through for panning after pinching
+                    mouse.x = touch.clientX;
+                    mouse.y = touch.clientY;
+                }
+            }
+
+            function panstart(e) {
+                var touch = e.touches[0];
+                mouse.x = touch.clientX;
+                mouse.y = touch.clientY;
+            }
+
+            function panmove(e) {
+                var touch = e.touches[0];
+                var dx = touch.clientX - mouse.x;
+                var dy = touch.clientY - mouse.y;
+                zui.translateSurface(dx, dy);
+                mouse.set(touch.clientX, touch.clientY);
+            }
+
+            function pinchstart(e) {
+                for (var i = 0; i < e.touches.length; i++) {
+                    var touch = e.touches[i];
+                    touches[touch.identifier] = touch;
+                }
+                var a = touches[0];
+                var b = touches[1];
+                var dx = b.clientX - a.clientX;
+                var dy = b.clientY - a.clientY;
+                distance = Math.sqrt(dx * dx + dy * dy);
+                mouse.x = dx / 2 + a.clientX;
+                mouse.y = dy / 2 + a.clientY;
+            }
+
+            function pinchmove(e) {
+                for (var i = 0; i < e.touches.length; i++) {
+                    var touch = e.touches[i];
+                    touches[touch.identifier] = touch;
+                }
+                var a = touches[0];
+                var b = touches[1];
+                var dx = b.clientX - a.clientX;
+                var dy = b.clientY - a.clientY;
+                var d = Math.sqrt(dx * dx + dy * dy);
+                var delta = d - distance;
+                zui.zoomBy(delta / 250, mouse.x, mouse.y);
+                distance = d;
+            }
+
+        }
+    </script>
+</body>

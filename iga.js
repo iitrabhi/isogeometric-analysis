@@ -1,17 +1,11 @@
-var two = new Two({
-    type: Two.Types.canvas,
-    fullscreen: true,
-    autostart: true
-}).appendTo(document.body);
-
 var svg = new Two({
     fullscreen: true,
     autostart: true
 }).appendTo(document.body);
 
-var rect = svg.makeRectangle(two.width / 2, two.height / 2, 150, 150);
+var rect = svg.makeRectangle(svg.width / 2, svg.height / 1.2, 150, 150);
 rect.fill = 'rgb(255, 255, 255)';
-two.bind('update', function() {
+svg.bind('update', function() {
     rect.rotation += 0.01;
 });
 
