@@ -11,14 +11,22 @@
     --base-font-weight: 400px;
 }
 
+
+/**
+ * Reset some basic elements
+ */
+
 body {
     background-color: #0c1c2a;
 }
 
+a,
+ul,
 h1 {
     /* font: var(base-font-weight) 24 var(base-font-family); */
     color: white;
     font-family: 'Bitter';
+    -webkit-font-smoothing: antialiased;
 }
 
 
