@@ -45,12 +45,13 @@
     </div>
     <script type="text/javascript">
         var ob1 = document.getElementById('canvas_1');
-        var params = {
-            fitted: true
-        };
-        var two1 = new Two(params);
+        // var params = {
+        //     width: 600,
+        //     height: 400
+        // };
+        var two1 = new Two();
         two1.appendTo(ob1);
-        var circle = two1.makeCircle(two1.width / 2, two1.height / 2, 80);
+        var circle = two1.makeCircle(150, 150, 80);
         circle.fill = '#06090c';
         circle.stroke = '#42c1f9';
         circle.linewidth = 6;

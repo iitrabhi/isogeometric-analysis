@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<!-- #f8135d
+#42c1f9
+#13ffb9
+#fee067 
+#06090c -->
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../main.css">
+    <script src="../js/two.min.js"></script>
+    <style>
+        .cards-list {
+            z-index: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            margin: 30px auto;
+            width: 500px;
+            height: 500px;
+            border-radius: 8px;
+            border: 5px solid;
+            border-width: 2px;
+            border-color: #505b61;
+            /* box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25), -5px -5px 30px 7px rgba(0, 0, 0, 0.22); */
+            cursor: pointer;
+            transition: 0.4s;
+            background-color: #06090c;
+            overflow: hidden;
+            /* this fixes the overflow:hidden in Chrome/Opera */
+            /* -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cards-list">
+        <div id="canvas_1" class="card"></div>
+        <div id="canvas_2" class="card"></div>
+    </div>
+    <script type="text/javascript">
+        var params = {
+            fitted: true
+        };
+
+        var ob1 = document.getElementById('canvas_1');
+        var two1 = new Two(params);
+        two1.appendTo(ob1);
+        var circle = two1.makeCircle((two1.width - 4) / 2, (two1.height - 4) / 2, 100);
+        circle.fill = '#06090c';
+        circle.stroke = '#42c1f9';
+        circle.linewidth = 6;
+        two1.update();
+        // -----------------------------------------------------------------------------------
+        function get_points(w, h, num_points) {
+            var max_x = Math.PI * 2;
+            var points = [];
+            var scale_x = w / max_x; // x will be 0 to pi
+            var scale_y = h / 3; // y will be -1.5 to 1.5
+            for (let i = 0; i < num_points; i++) {
+                switch (i) {
+                    case 0:
+                        cmnd = Two.Commands.move;
+                        console.log("move");
+                        break;
+                    case num_points - 1:
+                        cmnd = Two.Commands.close;
+                        console.log("close");
+                        break;
+                    default:
+                        cmnd = Two.Commands.curve;
+                        console.log("curve");
+
+                }
+                x = i * max_x / (num_points - 1);
+                yy = h / 2 + scale_y * Math.sin(x);
+                xx = scale_x * x;
+                console.log(x, xx, yy);
+                points.push(new Two.Anchor(xx, yy, 0, 0, 0, 0, cmnd));
+            }
+            console.log(points);
+            return points
+        }
+        // -----------------------------------------------------------------------------------
+        var ob2 = document.getElementById('canvas_2');
+        var two2 = new Two(params);
+        two2.appendTo(ob2);
+        var points = get_points(two2.width - 4, two2.height - 4, 100);
+        var curve_fill = new Two.Path(points);
+        curve_fill.fill = "#13ffb9";
+        curve_fill.opacity = 0.3;
+
+        var curve_path = new Two.Path(points);
+        curve_path.stroke = "#13ffb9";
+        curve_path.no_fill = true;
+        curve_path.linewidth = 4;
+        curve_path.noFill();
+        // curve_fill.automatic = false;
+
+        var axis = two2.makeLine(0, two2.height / 2, two2.width, two2.height / 2);
+        axis.linewidth = 4;
+        axis.noFill();
+        axis.stroke = "#ffffff";
+
+        two2.add(curve_fill);
+        two2.add(axis);
+        two2.add(curve_path);
+
+        two2.update();
+    </script>
+</body>
