@@ -90,6 +90,7 @@
         var ob2 = document.getElementById('canvas_2');
         var two2 = new Two(params);
         two2.appendTo(ob2);
+        // The issue is that two.width will give me the content+border width of the element
         var points = get_points(two2.width - 4, two2.height - 4, 100);
         var curve_fill = new Two.Path(points);
         curve_fill.fill = "#13ffb9";
@@ -102,15 +103,55 @@
         curve_path.noFill();
         // curve_fill.automatic = false;
 
-        var axis = two2.makeLine(0, two2.height / 2, two2.width, two2.height / 2);
-        axis.linewidth = 4;
-        axis.noFill();
-        axis.stroke = "#ffffff";
+        var xaxis = two2.makeLine(0, two2.height / 2, two2.width, two2.height / 2);
+        xaxis.linewidth = 4;
+        xaxis.noFill();
+        xaxis.stroke = "#ffffff";
 
         two2.add(curve_fill);
-        two2.add(axis);
+        two2.add(xaxis);
         two2.add(curve_path);
 
         two2.update();
+        // -----------------------------------------------------------------------------------
+        // Draw line through y axis
+
+        var mouse = new Two.Vector();
+        var yaxis = two2.makeLine(mouse.x, 0, mouse.x, two2.height);
+        yaxis.linewidth = 4;
+        yaxis.noFill();
+        yaxis.stroke = "#ffffff";
+
+        var dot = two2.makeCircle(0, (two2.height - 4) / 2, 10);
+        dot.fill = '#06090c';
+        dot.stroke = '#13ffb9';
+        dot.linewidth = 3;
+        // two2.add(yaxis);
+        two2.update();
+
+
+        ob2.addEventListener('pointermove', pointermove, false);
+
+        function pointermove(e) {
+            mouse.x = e.clientX - getOffset(ob2).left;
+            mouse.y = e.clientY - getOffset(ob2).top;
+            // console.log(mouse.x, mouse.y);
+            var scale_y = (two2.height - 4) / 3; // y will be -1.5 to 1.5
+            x = mouse.x / (two2.width - 4) * 2 * Math.PI;
+            yy = (two2.height - 4) / 2 + scale_y * Math.sin(x);
+
+            yaxis.translation.set(mouse.x, 0);
+            dot.translation.set(mouse.x, yy);
+            two2.update();
+
+        }
+
+        function getOffset(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY
+            };
+        }
     </script>
 </body>

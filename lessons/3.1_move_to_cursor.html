@@ -27,13 +27,10 @@
             border: 5px solid;
             border-width: 2px;
             border-color: #505b61;
-            /* box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25), -5px -5px 30px 7px rgba(0, 0, 0, 0.22); */
             cursor: pointer;
             transition: 0.4s;
             background-color: #06090c;
             overflow: hidden;
-            /* this fixes the overflow:hidden in Chrome/Opera */
-            /* -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); */
         }
     </style>
 </head>
@@ -75,7 +72,7 @@
         function pointermove(e) {
             mouse.x = e.clientX - getOffset(ob2).left;
             mouse.y = e.clientY - getOffset(ob2).top;
-            console.log(mouse.x, mouse.y);
+            // console.log(mouse.x, mouse.y);
             circle.translation.set(mouse.x, mouse.y);
             two2.update();
         }
