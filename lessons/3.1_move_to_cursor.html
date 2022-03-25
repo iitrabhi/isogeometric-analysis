@@ -44,26 +44,48 @@
         <div id="canvas_2" class="card"></div>
     </div>
     <script type="text/javascript">
+        var mouse = new Two.Vector();
         var ob1 = document.getElementById('canvas_1');
-        // var params = {
-        //     width: 600,
-        //     height: 400
-        // };
-        var two1 = new Two();
+        var params = {
+            fitted: true
+        };
+        var two1 = new Two(params);
         two1.appendTo(ob1);
-        var circle = two1.makeCircle(150, 150, 80);
+        var circle = two1.makeCircle(two1.width / 2, two1.height / 2, 80);
         circle.fill = '#06090c';
         circle.stroke = '#42c1f9';
         circle.linewidth = 6;
         two1.update();
-
+        // ----------------------------------------------------------------------------
         var ob2 = document.getElementById('canvas_2');
         var two2 = new Two();
         two2.appendTo(ob2);
-        var circle = two2.makeCircle(0, 80, 80);
+        var circle = two2.makeCircle(80, 80, 8);
         circle.fill = '#06090c';
         circle.stroke = '#42c1f9';
-        circle.linewidth = 6;
+        circle.linewidth = 3;
+
+        circle.translation.set(0, 0);;
         two2.update();
+        // ----------------------------------------------------------------------------
+        // This will listen for pointermove only on the ob2 element. But it will give
+        // absolute co-ordinates, we need getOffset for relative co-ordinates.
+        ob2.addEventListener('pointermove', pointermove, false);
+
+        function pointermove(e) {
+            mouse.x = e.clientX - getOffset(ob2).left;
+            mouse.y = e.clientY - getOffset(ob2).top;
+            console.log(mouse.x, mouse.y);
+            circle.translation.set(mouse.x, mouse.y);
+            two2.update();
+        }
+
+        function getOffset(el) {
+            const rect = el.getBoundingClientRect();
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY
+            };
+        }
     </script>
 </body>
