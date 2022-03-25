@@ -42,7 +42,10 @@
     </div>
     <script type="text/javascript">
         var ob1 = document.getElementById('canvas_1');
-        var two = new Two();
+        var params = {
+            fitted: true
+        };
+        var two = new Two(params);
         two.appendTo(ob1);
 
         var earthAngle = 0,
@@ -50,11 +53,12 @@
             distance = 30,
             radius = 15,
             padding = 50,
-            orbit = 100,
-            offset = orbit + padding,
+            orbit = 90,
+            center_x = two.width / 2,
+            center_y = two.height / 2,
             orbits = two.makeGroup();
 
-        var earthOrbit = two.makeCircle(offset, offset, orbit);
+        var earthOrbit = two.makeCircle(center_x, center_y, orbit);
         earthOrbit.noFill();
         earthOrbit.linewidth = 4;
         earthOrbit.stroke = "#ccc";
@@ -70,7 +74,7 @@
         }
 
         var pos = getPositions(earthAngle++, orbit),
-            earth = two.makeCircle(pos.x + offset, pos.y + offset, radius);
+            earth = two.makeCircle(pos.x + center_x, pos.y + center_y, radius);
 
         earth.stroke = "#3C98F5";
         earth.linewidth = 4;
@@ -78,8 +82,8 @@
 
         two.bind("update", function(frameCount) {
             var pos = getPositions(earthAngle++, orbit);
-            earth.translation.x = pos.x + offset;
-            earth.translation.y = pos.y + offset;
+            earth.translation.x = pos.x + center_x;
+            earth.translation.y = pos.y + center_y;
 
             var moonPos = getPositions(moonAngle, radius + distance);
             moon.translation.x = earth.translation.x + moonPos.x;
@@ -103,12 +107,13 @@
         moonAngle += 5;
         moon.fill = "#13ffb9";
 
+        // orbits.visible = false;
         two.play();
         // ------------------------------------------------------------------------------------------------
         var ob2 = document.getElementById('canvas_2');
-        var two2 = new Two();
+        var two2 = new Two(params);
         two2.appendTo(ob2);
-        var rect = two2.makeRectangle(150, 150, 100, 100);
+        var rect = two2.makeRectangle(two2.width / 2, two2.height / 2, 100, 100);
         console.log(two2.width / 2, two2.height / 2);
         rect.fill = 'rgb(255, 255, 255)';
         two2.bind('update', function() {
