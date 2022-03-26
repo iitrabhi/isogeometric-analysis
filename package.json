@@ -1,0 +1,26 @@
+{
+    "name": "isogeometric-analysis",
+    "version": "1.0.0",
+    "description": "Widgets to learn about isogeometric analysis",
+    "main": "lessons/9_test.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/iitrabhi/isogeometric-analysis.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/iitrabhi/isogeometric-analysis/issues"
+    },
+    "homepage": "https://github.com/iitrabhi/isogeometric-analysis#readme",
+    "dependencies": {
+        "twojs-ts": "^0.7.0-13"
+    },
+    "devDependencies": {
+        "@types/two.js": "^0.7.5"
+    }
+}

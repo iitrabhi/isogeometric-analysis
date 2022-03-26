@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<!-- #f8135d
+#42c1f9
+#13ffb9
+#fee067 
+#06090c -->
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../main.css">
+    <script src="../js/two.min.js"></script>
+    <style>
+        .cards-list {
+            z-index: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            margin: 30px auto;
+            width: 500px;
+            height: 500px;
+            border-radius: 8px;
+            border: 5px solid;
+            border-width: 2px;
+            border-color: #505b61;
+            /* box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25), -5px -5px 30px 7px rgba(0, 0, 0, 0.22); */
+            cursor: pointer;
+            transition: 0.4s;
+            background-color: #06090c;
+            overflow: hidden;
+            /* this fixes the overflow:hidden in Chrome/Opera */
+            /* -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC); */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cards-list">
+        <div id="canvas_1" class="card"></div>
+        <div id="canvas_2" class="card"></div>
+    </div>
+    <script type="text/javascript">
+        var ob1 = document.getElementById('canvas_1');
+        var params = {
+            fitted: true
+        };
+        var two1 = new Two(params);
+        two1.appendTo(ob1);
+        var circle = two1.makeCircle(two1.width / 2, two1.height / 2, 80);
+        circle.fill = '#06090c';
+        circle.stroke = '#42c1f9';
+        circle.linewidth = 6;
+        two1.update();
+
+        var ob2 = document.getElementById('canvas_2');
+        var two2 = new Two();
+        two2.appendTo(ob2);
+        var styles = {
+            size: 20
+        };
+
+        // If your typeface supports
+        // unicode superscript and
+        // subscript characters.
+        var text = two2.makeText('0123₀₁₂₃₄', 50, two2.height / 2, styles);
+        text.fill = '#42c1f9';
+        text.stroke = '#42c1f9';
+        // Create different sets of
+        // `Two.Text` elements and
+        // compose them in a way that
+        // resembles superscript or
+        // subscript characters.
+        var hey = two2.makeText('Hey', 50, two2.height / 4, styles);
+        var there = two2.makeText('there', 50 + 20, two2.height / 4 + 5, {
+            size: 12,
+            alignment: 'left'
+        });
+
+        var group = two2.makeGroup();
+        group.add(hey);
+        group.add(there);
+
+        group.fill = '#42c1f9';
+        group.stroke = '#42c1f9';
+
+        two2.update();
+    </script>
+</body>
