@@ -68,14 +68,14 @@
         // subscript characters.
         var text = two2.makeText('0123₀₁₂₃₄', 50, two2.height / 2, styles);
         text.fill = '#42c1f9';
-        text.stroke = '#42c1f9';
+        // text.stroke = '#42c1f9';
         // Create different sets of
         // `Two.Text` elements and
         // compose them in a way that
         // resembles superscript or
         // subscript characters.
-        var hey = two2.makeText('Hey', 50, two2.height / 4, styles);
-        var there = two2.makeText('there', 50 + 20, two2.height / 4 + 5, {
+        var hey = two2.makeText('Hey', 150, two2.height / 2, styles);
+        var there = two2.makeText('there', 150 + 20, two2.height / 2 + 5, {
             size: 12,
             alignment: 'left'
         });
@@ -85,8 +85,21 @@
         group.add(there);
 
         group.fill = '#42c1f9';
-        group.stroke = '#42c1f9';
+        // group.stroke = '#42c1f9';
+        var x = 0
+        two2.update();
+        two2.bind('update', function() {
+            if (x > 600) {
+                x = 0;
+            }
+            x = x + 10
+            group.translation.set(x, 100);
+
+        });
+
+        group.translation.set(0, 100);
 
         two2.update();
+        // two2.play();
     </script>
 </body>
