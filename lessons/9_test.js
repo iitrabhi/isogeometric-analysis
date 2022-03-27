@@ -4,4 +4,5 @@ var params = {
     fitted: true
 };
 var two1 = new Two(params);
-two1.
+var group = two1.makeGroup();
+group.add(hey);

@@ -74,12 +74,13 @@
         // compose them in a way that
         // resembles superscript or
         // subscript characters.
-        var hey = two2.makeText('Hey', 150, two2.height / 2, styles);
-        var there = two2.makeText('there', 150 + 20, two2.height / 2 + 5, {
+        var hey = two2.makeText('Hey', 0, two2.height / 2, styles);
+        var there = two2.makeText('there', 0 + 20, two2.height / 2 + 5, {
             size: 12,
             alignment: 'left'
         });
 
+        // https://stackoverflow.com/questions/19354060/rotate-a-two-js-object-in-its-position
         var group = two2.makeGroup();
         group.add(hey);
         group.add(there);
@@ -92,7 +93,7 @@
             if (x > 600) {
                 x = 0;
             }
-            x = x + 10
+            x = x + 1
             group.translation.set(x, 100);
 
         });
@@ -100,6 +101,6 @@
         group.translation.set(0, 100);
 
         two2.update();
-        // two2.play();
+        two2.play();
     </script>
 </body>
