@@ -8,7 +8,7 @@ const loadingManager = new THREE.LoadingManager(() => {
     // optional: remove loader from DOM via event listener
     loadingScreen.addEventListener('transitionend', onTransitionEnd);
 });
-// // collada
+// collada
 // const loader = new THREE.ColladaLoader(loadingManager);
 // loader.load('//cdn.rawgit.com/mrdoob/three.js/master/examples/models/collada/stormtrooper/stormtrooper.dae', (collada) => {
 //     const animations = collada.animations;
@@ -17,25 +17,25 @@ const loadingManager = new THREE.LoadingManager(() => {
 //     const action = mixer.clipAction(animations[0]).play();
 //     scene.add(avatar);
 // });
-// //
-// const gridHelper = new THREE.PolarGridHelper(8, 16);
-// scene.add(gridHelper);
-// //
-// const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-// scene.add(ambientLight);
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-// directionalLight.position.set(1, 1, -1);
-// scene.add(directionalLight);
-// //
+//
+const gridHelper = new THREE.PolarGridHelper(8, 16);
+scene.add(gridHelper);
+//
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+scene.add(ambientLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+directionalLight.position.set(1, 1, -1);
+scene.add(directionalLight);
+//
 renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-// //
-// const controls = new THREE.OrbitControls(camera, renderer.domElement);
-// controls.target.set(0, 2, 0);
-// controls.update();
-// //
+//
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 2, 0);
+controls.update();
+//
 window.addEventListener('resize', onWindowResize, false);
 
 function onWindowResize() {

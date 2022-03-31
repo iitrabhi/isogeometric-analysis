@@ -7,9 +7,9 @@
 </head>
 
 <body>
-    <!-- <section id="loading-screen">
+    <section id="loading-screen">
         <div id="loader"></div>
-    </section> -->
+    </section>
     <script src="./three.min.js"></script>
     <script src="./GLTFLoader.js"></script>
     <script src="./OrbitControls.js"></script>
@@ -30,12 +30,12 @@
             camera.position.z = -1000;
 
 
-            // const loadingManager = new THREE.LoadingManager(() => {
-            //     const loadingScreen = document.getElementById('loading-screen');
-            //     loadingScreen.classList.add('fade-out');
-            //     // optional: remove loader from DOM via event listener
-            //     loadingScreen.addEventListener('transitionend', onTransitionEnd);
-            // });
+            const loadingManager = new THREE.LoadingManager(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                loadingScreen.classList.add('fade-out');
+                // optional: remove loader from DOM via event listener
+                loadingScreen.addEventListener('transitionend', onTransitionEnd);
+            });
 
             hlight = new THREE.AmbientLight(0x404040, 1);
             scene.add(hlight);
@@ -67,16 +67,33 @@
             controls.addEventListener('change', render);
 
             let loader = new THREE.GLTFLoader();
-            loader.load('./bridge.glb', function(gltf) {
-                var box = new THREE.Box3().setFromObject(gltf.scene);
-                // https://stackoverflow.com/questions/57642962/centering-pivot-point-in-three-js-with-orbitcontrols-autorotate
-                box.getCenter(controls.target);
-                car = gltf.scene.children[0];
-                car.scale.set(0.5, 0.5, 0.5);
-                scene.add(gltf.scene);
+            loader.load(
+                // resource URL
+                './bridge.glb',
+                // called when resource is loaded
+                function(gltf) {
+                    const loadingScreen = document.getElementById('loading-screen');
+                    // loadingScreen.remove(); 
+                    loadingScreen.classList.add('fade-out');
+                    // optional: remove loader from DOM via event listener
+                    loadingScreen.addEventListener('transitionend', onTransitionEnd);
+                    var box = new THREE.Box3().setFromObject(gltf.scene);
+                    // https://stackoverflow.com/questions/57642962/centering-pivot-point-in-three-js-with-orbitcontrols-autorotate
+                    box.getCenter(controls.target);
+                    car = gltf.scene.children[0];
+                    car.scale.set(0.5, 0.5, 0.5);
+                    scene.add(gltf.scene);
 
-                animate();
-            });
+                    animate();
+                },
+                // called when loading is in progresses
+                function(gltf) {
+                    console.log((gltf.loaded / gltf.total * 100) + '% loaded');
+                },
+                // called when loading has errors
+                function(error) {
+                    console.log('An error happened');
+                });
 
             window.addEventListener('resize', onWindowResize, false);
         }
@@ -98,10 +115,10 @@
             renderer.render(scene, camera);
         }
 
-        // function onTransitionEnd(event) {
-        //     const element = event.target;
-        //     element.remove();
-        // }
+        function onTransitionEnd(event) {
+            const element = event.target;
+            element.remove();
+        }
         init();
     </script>
 </body>
