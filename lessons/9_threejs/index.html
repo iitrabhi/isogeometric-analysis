@@ -3,10 +3,13 @@
 
 <head>
     <meta charset=UTF-8 />
-    <link rel="stylesheet" type="text/css" href="./styles.css" />
+    <link rel="stylesheet" type="text/css" href="./loading.css" />
 </head>
 
 <body>
+    <!-- <section id="loading-screen">
+        <div id="loader"></div>
+    </section> -->
     <script src="./three.min.js"></script>
     <script src="./GLTFLoader.js"></script>
     <script src="./OrbitControls.js"></script>
@@ -27,6 +30,12 @@
             camera.position.z = -1000;
 
 
+            // const loadingManager = new THREE.LoadingManager(() => {
+            //     const loadingScreen = document.getElementById('loading-screen');
+            //     loadingScreen.classList.add('fade-out');
+            //     // optional: remove loader from DOM via event listener
+            //     loadingScreen.addEventListener('transitionend', onTransitionEnd);
+            // });
 
             hlight = new THREE.AmbientLight(0x404040, 1);
             scene.add(hlight);
@@ -55,7 +64,7 @@
             document.body.appendChild(renderer.domElement);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.addEventListener('change');
+            controls.addEventListener('change', render);
 
             let loader = new THREE.GLTFLoader();
             loader.load('./bridge.glb', function(gltf) {
@@ -84,6 +93,15 @@
             controls.autoRotate = true;
             controls.update();
         }
+
+        function render() {
+            renderer.render(scene, camera);
+        }
+
+        // function onTransitionEnd(event) {
+        //     const element = event.target;
+        //     element.remove();
+        // }
         init();
     </script>
 </body>
