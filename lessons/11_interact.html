@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Two.js and Interact.js Slider</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/two.js/0.7.0/two.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.3/dist/interact.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+      #draw-shapes {
+        width: 100%;
+        height: 100%;
+      }
+      .can-touch {
+        touch-action: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="draw-shapes"></div>
+
+    <script>
+      // Set up Two.js
+      var elem = document.getElementById("draw-shapes");
+      var params = { width: 500, height: 200 };
+      var two = new Two(params).appendTo(elem);
+
+      // Create the slider line
+      var line = two.makeLine(
+        two.width / 10,
+        two.height / 2,
+        (two.width * 9) / 10,
+        two.height / 2
+      );
+      line.stroke = "#000000";
+
+      // Create the draggable circle
+      var circle = two.makeCircle(two.width / 10, two.height / 2, 20);
+      circle.fill = "#FF8000";
+      circle.noStroke();
+    //   circle._renderer.elem.classList.add('can-touch');
+
+      // Update and render the scene
+      two.update();
+
+      // Function to keep the circle on the line
+      function keepCircleOnLine(x) {
+        var minX = line.vertices[0].x;
+        var maxX = line.vertices[1].x;
+
+        // Clamp x within the line's bounds
+        x = Math.max(minX, Math.min(maxX, x));
+
+        // Update circle position
+        circle.translation.set(x, line.vertices[0].y);
+        two.update();
+      }
+
+      // Add Interact.js functionality
+      interact(circle._renderer.elem).draggable({
+        inertia: true,
+        modifiers: [
+          interact.modifiers.restrictRect({
+            restriction: "parent",
+            endOnly: true,
+          }),
+        ],
+        listeners: {
+          start(event) {
+            console.log(event.type, event.target);
+          },
+          move(event) {
+            var target = event.target;
+            var x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
+
+            target.setAttribute("data-x", x);
+            keepCircleOnLine(x);
+          },
+          end(event) {
+            console.log(event.type, event.target);
+          },
+        },
+      });
+
+      // Initial placement
+      keepCircleOnLine(circle.translation.x);
+    </script>
+  </body>
+</html>
