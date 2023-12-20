@@ -18,6 +18,7 @@
     },
     "homepage": "https://github.com/iitrabhi/isogeometric-analysis#readme",
     "dependencies": {
+        "interactjs": "^1.10.26",
         "twojs-ts": "^0.7.0-13"
     },
     "devDependencies": {
