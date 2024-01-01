@@ -9,7 +9,7 @@
 // Assuming you have a Two.js instance and a circle
 var two = new Two({ fullscreen: true }).appendTo(document.body);
 var circle = two.makeCircle(70, 70, 50);
-circle.fill = '#888888';
+circle.fill = '#2A4471';
 circle.noStroke();
 
 
