@@ -1,0 +1,28 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Page</title>
+    <style>
+        iframe {
+            width: 100%;
+            height: 200px; /* Limited height to ensure a scrollable iframe */
+            border: 2px solid black;
+        }
+        .content {
+            height: 1500px; /* Ensures the parent page is scrollable */
+        }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <p>Scroll down to the iframe and try scrolling inside the iframe.</p>
+    <!-- Embedding the iframe -->
+    <iframe src="index.html"></iframe>
+    <p>Content continues...</p>
+</div>
+
+</body>
+</html>

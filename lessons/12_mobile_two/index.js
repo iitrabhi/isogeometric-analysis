@@ -12,9 +12,16 @@ var circle = two.makeCircle(70, 70, 50);
 circle.fill = '#FFFFFF';
 circle.noStroke();
 
-two.update();
 
+
+
+two.update();
+circle._renderer.elem.addEventListener('touchstart', onDown, { passive: false });
+circle._renderer.elem.addEventListener('touchmove', onMove, { passive: false });
+// Apply the same for other touch or wheel events as necessary
 function onMove(e) {
+    e.preventDefault(); // Prevents scrolling and other default actions
+
     // Normalize touch and mouse coordinates
     var clientX, clientY;
     if (e.touches) {
@@ -38,12 +45,15 @@ function onUp(e) {
 }
 
 function onDown(e) {
+    e.preventDefault();
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
-    window.addEventListener('touchmove', onMove);
-    window.addEventListener('touchend', onUp);
+    // Set the event listeners for touch events with passive: false
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onUp, { passive: false });
 }
 
 // Add event listeners for both mouse and touch events
 circle._renderer.elem.addEventListener('mousedown', onDown);
-circle._renderer.elem.addEventListener('touchstart', onDown);
+// Set the initial touch event listener with passive: false
+circle._renderer.elem.addEventListener('touchstart', onDown, { passive: false });
